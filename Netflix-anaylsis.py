@@ -13,7 +13,14 @@ netflix_subset = netflix_df[netflix_df["type"] == "Movie"]
 subset = netflix_subset[(netflix_subset["release_year"] >= 1990)]
 
 # And then do the same to filter out movies released before 2000
-movies_1990s = subset[(subset["release_year"] < 2000)]
+movies_1990s = subset[(subset["release_year"] < 2000)].copy()
+
+# Convert duration values to numeric minutes before plotting and comparing.
+# This handles values like "90 min" and turns them into integers.
+movies_1990s["duration"] = pd.to_numeric(
+    movies_1990s["duration"].astype(str).str.extract(r"(\d+)")[0],
+    errors="coerce"
+)
 
 # Another way to do this step is to use the & operator to which allows you to do this type of
 #filtering in one step
@@ -21,13 +28,11 @@ movies_1990s = subset[(subset["release_year"] < 2000)]
 
 # Visualize the duration column of your filtered data to see the distribution of movie durations
 # See which bar is the highest and save the duration value< this doesn"t need to be exact !
-plt.hist(movies_1990s["duration"])
+plt.hist(movies_1990s["duration"].dropna())
 plt.title('Distribution of Movie Durations in the 1990s')
 plt.xlabel('Duration (minutes)')
 plt.ylabel('Number of Movies')
 plt.show()
-
-duration = 100
 
 # use a for loop and a counter to count how many short action movies there were in the 1990s
 
